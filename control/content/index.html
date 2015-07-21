@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html ng-app="textPluginContent">
+<head lang="en">
+    <meta charset="UTF-8">
+    <script src="../../../../scripts/buildfire.js"></script>
+    <script src="../../../../scripts/angular/angular.min.js"></script>
+</head>
+<body ng-controller="textPluginCtrl">
+
+	<div class="item clearfix">
+		<div class="labels pull-left">
+			<label>Body Content</label>
+		</div>
+		<div class="main pull-right">
+			<textarea class="form-control" placeholder="WYSIWYG"></textarea>
+		</div>
+	</div>
+	
+<script>
+    var textPluginApp = angular.module('textPluginContent',[]);
+
+    textPluginApp.controller('textPluginCtrl',['$scope',function($scope){
+        
+    }]);
+</script>
+</body>
+</html>
