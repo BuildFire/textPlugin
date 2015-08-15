@@ -1,0 +1,11 @@
+/*
+dummy css file
+*/
+.owl-item .item{
+    margin-left: 15px;
+}
+.owl-item .item img{
+    display: block;
+    width: 100%;
+    height: auto;
+}
