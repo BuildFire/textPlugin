@@ -15,27 +15,31 @@
 </head>
 <body ng-controller="textPluginCtrl" ng-cloak>
     <style>
-        .overlay {
-            position: absolute;
+        .overlay{
             top: 0;
             left: 0;
             width: 100%;			
         }
-
         .overlay.background {
-                position: fixed;
-                height: 100%;
-				z-index:-1;
-            }
-
-            .overlay.background img {
-                height: 100%;
-            }
-
+         	position: fixed;
+          	height: 100%;
+			z-index:0;
+        }  
+   		.overlay.background img {
+          	height: 105%;
+			width:105%;
+			max-width:105%;
+			left:-2.5%;
+			top:-2.5%;
+			position:absolute;
+        }
+		.content{
+			position:relative;
+			z-index:2;
+		}
         .owl-carousel .owl-controls .owl-dots {
             text-align: center;
-        }
-		
+        }		
 		.widget-content {
 			word-break: break-word;
 		}
@@ -43,7 +47,7 @@
     <div class="overlay background" ng-if="data.design.backgroundImage && deviceWidth != 0 && deviceHeight != 0">
         <img ng-src="{{ cropImage(data.design.backgroundImage, {width: deviceWidth, height: deviceHeight}) }}" style="-webkit-filter: blur({{data.design.backgroundBlur}}px); -moz-filter blur({{data.design.backgroundBlur}}px); -o-filter blur({{data.design.backgroundBlur}}px); -ms-filter blur({{data.design.backgroundBlur}}px); filter blur({{data.design.backgroundBlur}}px);">
     </div>
-    <div>
+    <div class="content">
         <div id="carousel"></div>
         <div ng-bind-html="data.content.text" class="widget-content padded"></div>
     </div>
