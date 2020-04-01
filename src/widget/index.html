@@ -17,7 +17,21 @@
         word-break: break-word;
       }
       #carousel {
+        position: relative;
+        overflow: hidden;
         background-color: rgba(0,0,0,0.2);
+      }
+
+      #carousel > div,
+      #carousel > div > ul {
+        height: 100%;
+      }
+
+      #carousel > img {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        -webkit-transform: translateY(-50%) translateX(-50%);
       }
     </style>
 </head>
