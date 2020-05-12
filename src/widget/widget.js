@@ -111,8 +111,8 @@ function renderCarousel() {
 
   // Set the proper size to the carousel container
   carouselContainer.style.height = selectedLayout === 1
-    ? `${Math.ceil(9 * state.width / 16)}px`
-    : `${Math.ceil(1 * state.width / 2.39)}px`;
+    ? `${Math.ceil(9 * state.width / 16.7)}px`
+    : `${Math.ceil(1 * state.width / 2.5)}px`;
 
   // Destroy the carousel if we already have one
   if (state.carouselInstance && state.carouselInstance.lorySlider) {
