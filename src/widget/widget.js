@@ -32,19 +32,19 @@ const defaultData = {
 };
 
 const state = {
-  height: window.innerHeight,
-  width: window.innerWidth,
+  height: "auto",
+  width: "100vw",
   carouselInstance: null,
   data: {
     content: {
       carouselImages: [],
-      text: ''
+      text: "",
     },
     design: {
       backgroundImage: null,
-      selectedLayout: 1
-    }
-  }
+      selectedLayout: 1,
+    },
+  },
 };
 
 function init() {
