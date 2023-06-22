@@ -54,12 +54,14 @@ function init() {
     state.data = result.data && result.data.content
       ? result.data
       : defaultData;
+    !state.data.design ? state.data.design = defaultData.design : null;
     render();
   });
 
   // Keep state up to date with control changes
   buildfire.datastore.onUpdate((result) => {
     state.data = result.data;
+    !state.data.design ? state.data.design = defaultData.design : null;
     render();
   });
 }

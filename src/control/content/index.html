@@ -142,6 +142,9 @@
                     return;
                 }
 
+                if(!newObj.content || !newObj.design)
+                    return;
+
                 buildfire.datastore.save(newObj, function (err, result) {
                     if (err || !result) {
                         console.error('Error saving the widget details: ', err);
