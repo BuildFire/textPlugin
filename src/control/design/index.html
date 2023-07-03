@@ -73,6 +73,7 @@
                 }
 
                 if (result && result.data && !angular.equals({}, result.data)) {
+                    if(!result.data.design) result.data.design = $scope.data.design;
                     $scope.data = result.data;
                     $scope.id = result.id;
                 }
@@ -110,6 +111,9 @@
                     console.warn('invalid data, details will not be saved');
                     return;
                 }
+
+                if(!newObj.content || !newObj.design)
+                    return;
 
                 buildfire.datastore.save(newObj, function (err, result) {
                     if (err || !result) {
