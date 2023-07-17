@@ -1,5 +1,6 @@
 ﻿<!DOCTYPE html>
 <html ng-app="textPlugin">
+
 <head lang="en">
     <meta charset="UTF-8">
 
@@ -16,13 +17,14 @@
     <script src="../../../../scripts/jquery/jquery-1.11.2.min.js"></script>
     <script src="../../../../scripts/sortable.min.js"></script>
     <script src="../../../../scripts/buildfire/components/carousel/carousel.js"></script>
-
+    <script src="../../../../scripts/buildfire/components/aiStateSeeder/aiStateSeeder.js"></script>
 
 </head>
+
 <body ng-controller="textPluginCtrl" id="textApp">
-    <div ng-form="frmMain">
+    <div ng-form="frmMain" ng-class="{'hidden': showContent === false}">
         <div id="carousel"></div>
-		<hr class="none">
+        <hr class="none">
         <div class="item clearfix row">
             <div class="labels col-md-3 padding-right-zero pull-left">
                 <span>Text</span>
@@ -65,6 +67,47 @@
                 }
             };
 
+            $scope.showContent = false;
+
+            var showAISeeder = function() {
+                let seeder = new buildfire.components.aiStateSeeder({
+                        generateOptions: {
+                            userMessage: 'Write a blog post for me about the [topic]',
+                            systemMessage: 'Blog post is an HTML string that can be inserted into a div tag, utilize images, figures, statistics. Use dummyimages.com to generate image URLs.',
+                            jsonTemplate: {
+                                content: {
+                                    carouselImages: [],
+                                    text: ""
+                                }
+                            },
+                        },
+                        importOptions: {
+                            jsonTemplate: {
+                                content: {
+                                    carouselImages: [],
+                                    text: ""
+                                }
+                            },
+                            sampleCsv: `https://source.unsplash.com/featured/?sunny, <h2>Some heading<h2><p>Some Text</p>`,
+                            systemMessage: `For blog post images use dummyimages.com. For carousel images, generate small array of image urls based on topic, use source.unsplash.com for image URLs.`,
+                        }
+                    }).smartShowEmptyState({ selector: this.selector, }, (err, result) => {
+                        if (!result) 
+                            buildfire.dialog.toast({ message: "Something went wrong" });
+                        $scope.$apply(function () {
+                            $scope.showContent = true;
+                            $scope.data.content = {
+                                carouselImages: result.data.content.carouselImages.map(el => { return { iconUrl: el, action: "noAction", title: "image" } }),
+                                text: result.data.content.text
+                            }
+                            editor.loadItems($scope.data.content.carouselImages);
+                            console.log($scope)
+                            seeder.requestResult.complete();
+                        })
+                    });
+                    $scope.showContent = true;
+            }
+
             // create a new instance of the buildfire carousel editor
             var editor = new buildfire.components.carousel.editor("#carousel");
 
@@ -79,40 +122,16 @@
                     console.error("Error: ", err);
                     return;
                 }
-
-                if (result && result.data && !angular.equals({}, result.data) && result.id) {
-                    if(!result.data.design) result.data.design = $scope.data.design;
+                if (Object.keys(result.data).length && result.data.content.carouselImages.length > 0 && result.data.content.text && result.data.design) {
+                    if (!result.data.design) result.data.design = $scope.data.design;
                     $scope.data = result.data;
                     $scope.id = result.id;
-                    if($scope.data.content && $scope.data.content.carouselImages)
+                    if ($scope.data.content && $scope.data.content.carouselImages)
                         editor.loadItems($scope.data.content.carouselImages);
                     if (tmrDelay) clearTimeout(tmrDelay);
-                } else{
-                  $scope.data = { content :{
-                    text :
-                    '<p>The WYSIWYG (which stands for What You See Is What You Get) allows you to do some really cool stuff. You can add images like this</p>\
-                  <p><img src="https://static.pexels.com/photos/12057/pexels-photo-12057-large.jpeg" alt="" width="100%" height="auto" /></p>\
-                  <p>You can even create links like these:<br /> Link to web content like <a href="http://www.google.com">this</a><br /> Link to a phone number like this <a href="tel: 8005551234">8005551234</a><br /> Link to an email like this <a href="mailto:noreply@google.com">noreply@google.com</a></p>\
-                  <p>Want to add some super cool videos about this item? You can do that too!</p>\
-                  <p><iframe src="https://www.youtube.com/embed/wTcNtgA6gHs" width="100%" height="auto" frameborder="0" allowfullscreen="allowfullscreen"></iframe></p>\
-                  <p>You can create bulleted and numbered lists like this:</p>\
-                  <ul>\
-                  <li>This is an item in a list</li>\
-                  <li>This is another item in a list</li>\
-                  <li>This is a last item in a list</li>\
-                  </ul>\
-                  <p>Want more info? Check out our tutorial by clicking the help button at the top of this page.</p>',
-
-                    carouselImages :
-                        [{"action":"noAction","iconUrl":"http://imageserver.prod.s3.amazonaws.com/b55ee984-a8e8-11e5-88d3-124798dea82d/5db61d30-0854-11e6-8963-f5d737bc276b.jpg","title":"image 1"},{"action":"noAction","iconUrl":"http://imageserver.prod.s3.amazonaws.com/b55ee984-a8e8-11e5-88d3-124798dea82d/31c88a00-0854-11e6-8963-f5d737bc276b.jpeg","title":"image 2"}]
-                    },
-                      design: {
-                        backgroundImage: null,
-                        backgroundBlur: 0,
-                        selectedLayout: 1
-                  }
-                  };
-                  editor.loadItems($scope.data.content.carouselImages);
+                    $scope.showContent = true;
+                } else {
+                    showAISeeder();
                 }
 
                 /*
@@ -143,8 +162,12 @@
                     return;
                 }
 
-                if(!newObj.content || !newObj.design)
+                if (!newObj.content || !newObj.design)
                     return;
+
+                if(!newObj.content.carouselImages.length && !newObj.content.text) {
+                    showAISeeder();
+                }
 
                 buildfire.datastore.save(newObj, function (err, result) {
                     if (err || !result) {
