@@ -1,5 +1,6 @@
 ﻿<!DOCTYPE html>
 <html ng-app="textPlugin">
+
 <head lang="en">
     <meta charset="UTF-8">
 
@@ -16,13 +17,14 @@
     <script src="../../../../scripts/jquery/jquery-1.11.2.min.js"></script>
     <script src="../../../../scripts/sortable.min.js"></script>
     <script src="../../../../scripts/buildfire/components/carousel/carousel.js"></script>
-
+    <script src="../../../../scripts/buildfire/components/aiStateSeeder/aiStateSeeder.js"></script>
 
 </head>
+
 <body ng-controller="textPluginCtrl" id="textApp">
-    <div ng-form="frmMain">
+    <div ng-form="frmMain" ng-class="{'hidden': showContent === false}">
         <div id="carousel"></div>
-		<hr class="none">
+        <hr class="none">
         <div class="item clearfix row">
             <div class="labels col-md-3 padding-right-zero pull-left">
                 <span>Text</span>
@@ -65,6 +67,52 @@
                 }
             };
 
+            $scope.showContent = false;
+
+            var showAISeeder = function() {
+                let seeder = new buildfire.components.aiStateSeeder({
+                        generateOptions: {
+                            userMessage: 'Write a sample article about the [topic]',
+                            systemMessage: 'Article should utilize images, figures, statistics. Article length should be less then 400 characters. For carousel images use source.unsplash.com',
+                            jsonTemplate: {
+                                content: {
+                                    carouselImages: [],
+                                    text: ""
+                                }
+                            },
+                        },
+                        importOptions: {
+                            jsonTemplate: {
+                                content: {
+                                    carouselImages: [],
+                                    text: ""
+                                }
+                            },
+                            sampleCsv: `https://source.unsplash.com/featured/?music, <h1>The Magic of Music</h1><div class="image"><img src="https://source.unsplash.com/featured/?music" alt="Music Image"></div><p>Music is a universal language that touches the hearts and souls of people all around the world. It has the power to evoke emotions, bring back memories, and create a sense of connection among individuals. Whether you're listening to your favorite tunes, playing an instrument, or attending a live concert, music has a way of transporting you to a different world.</p><p>Music can be found in various genres, each with its own unique style and characteristics. From classical masterpieces to upbeat pop songs, from soulful jazz melodies to energetic rock anthems, there's something for everyone's taste. It's incredible how a simple arrangement of notes and lyrics can stir up feelings of joy, sadness, excitement, or nostalgia.</p><p>Moreover, music has the ability to bring people together. It serves as a common ground where individuals from different cultures and backgrounds can find commonality and share their love for melodies and rhythms. Whether you're jamming with friends, joining a choir, or attending a music festival, music fosters a sense of community and unity.</p><p>So, let the power of music surround you. Explore new artists, discover different genres, and let the melodies guide your emotions. Whether you're seeking solace, motivation, or simply a form of entertainment, music will always be there to accompany you on your journey.</p>`,
+                            systemMessage: `For blog post images use dummyimages.com. For carousel images, generate small array of image urls based on topic, use source.unsplash.com for image URLs.`,
+                        }
+                    }).smartShowEmptyState(null, (err, result) => {
+                        $scope.$apply(function () {
+                            $scope.showContent = true;
+                            if (seeder.requestType === 'generate') {
+                                $scope.data.content = {
+                                    carouselImages: result.data.content.carouselImages.map(el => { return { iconUrl: el, action: "noAction", title: "image" } }),
+                                    text: result.data.content.text
+                                }
+                            } else {
+                                $scope.data.content = {
+                                    carouselImages: $scope.data.content.carouselImages.concat(result.data.content.carouselImages.map(el => { return { iconUrl: el, action: "noAction", title: "image" } })),
+                                    text: $scope.data.content.text + result.data.content.text
+                                }
+                            }
+
+                            editor.loadItems($scope.data.content.carouselImages);
+                            seeder.requestResult.complete();
+                        });
+                    });
+                    $scope.showContent = true;
+            }
+
             // create a new instance of the buildfire carousel editor
             var editor = new buildfire.components.carousel.editor("#carousel");
 
@@ -79,40 +127,16 @@
                     console.error("Error: ", err);
                     return;
                 }
-
-                if (result && result.data && !angular.equals({}, result.data) && result.id) {
-                    if(!result.data.design) result.data.design = $scope.data.design;
+                if (Object.keys(result.data).length && result.data.content.carouselImages.length > 0 && result.data.content.text) {
+                    if (!result.data.design) result.data.design = $scope.data.design;
                     $scope.data = result.data;
                     $scope.id = result.id;
-                    if($scope.data.content && $scope.data.content.carouselImages)
+                    if ($scope.data.content && $scope.data.content.carouselImages)
                         editor.loadItems($scope.data.content.carouselImages);
                     if (tmrDelay) clearTimeout(tmrDelay);
-                } else{
-                  $scope.data = { content :{
-                    text :
-                    '<p>The WYSIWYG (which stands for What You See Is What You Get) allows you to do some really cool stuff. You can add images like this</p>\
-                  <p><img src="https://static.pexels.com/photos/12057/pexels-photo-12057-large.jpeg" alt="" width="100%" height="auto" /></p>\
-                  <p>You can even create links like these:<br /> Link to web content like <a href="http://www.google.com">this</a><br /> Link to a phone number like this <a href="tel: 8005551234">8005551234</a><br /> Link to an email like this <a href="mailto:noreply@google.com">noreply@google.com</a></p>\
-                  <p>Want to add some super cool videos about this item? You can do that too!</p>\
-                  <p><iframe src="https://www.youtube.com/embed/wTcNtgA6gHs" width="100%" height="auto" frameborder="0" allowfullscreen="allowfullscreen"></iframe></p>\
-                  <p>You can create bulleted and numbered lists like this:</p>\
-                  <ul>\
-                  <li>This is an item in a list</li>\
-                  <li>This is another item in a list</li>\
-                  <li>This is a last item in a list</li>\
-                  </ul>\
-                  <p>Want more info? Check out our tutorial by clicking the help button at the top of this page.</p>',
-
-                    carouselImages :
-                        [{"action":"noAction","iconUrl":"http://imageserver.prod.s3.amazonaws.com/b55ee984-a8e8-11e5-88d3-124798dea82d/5db61d30-0854-11e6-8963-f5d737bc276b.jpg","title":"image 1"},{"action":"noAction","iconUrl":"http://imageserver.prod.s3.amazonaws.com/b55ee984-a8e8-11e5-88d3-124798dea82d/31c88a00-0854-11e6-8963-f5d737bc276b.jpeg","title":"image 2"}]
-                    },
-                      design: {
-                        backgroundImage: null,
-                        backgroundBlur: 0,
-                        selectedLayout: 1
-                  }
-                  };
-                  editor.loadItems($scope.data.content.carouselImages);
+                    $scope.showContent = true;
+                } else {
+                    showAISeeder();
                 }
 
                 /*
@@ -143,7 +167,7 @@
                     return;
                 }
 
-                if(!newObj.content || !newObj.design)
+                if (!newObj.content || !newObj.design)
                     return;
 
                 buildfire.datastore.save(newObj, function (err, result) {
