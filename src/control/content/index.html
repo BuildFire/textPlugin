@@ -37,6 +37,21 @@
     </div>
 
     <script>
+        /**
+         * We are overriding "buildfire.datastore.save" to avoid affects on multi instances and home screen, 
+         * which is happening when update something then navigate back to home screen before getting db callback
+         */
+        function overrideDatastoreSave() {
+            const instanceId = buildfire.getContext().instanceId;
+            const datastoreSave = buildfire.datastore.save;
+            buildfire.datastore.save = function (...args) {
+                const currentInstanceId = buildfire.getContext().instanceId;
+                if (currentInstanceId === instanceId) {
+                    datastoreSave(...args);
+                }
+            };
+        }
+        overrideDatastoreSave();
         var textPluginApp = angular.module('textPlugin', [ 'ui.tinymce' ]);
 
         textPluginApp.controller('textPluginCtrl', ['$scope', function ($scope) {
@@ -165,7 +180,7 @@
                 if (angular.equals(newObj, oldObj)) return;
                 tmrDelay = setTimeout(function () {
                     saveData(newObj);
-                }, 500);
+                }, 300);
             };
 
             // this method will be called when a new item added to the list
