@@ -66,7 +66,7 @@ const WebpackConfig = {
       to: path.join(__dirname, '../dist/plugin.json'),
     }
     ], {
-      ignore: ['*.js', '*.html', '*.md']
+      ignore: []
     }),
     new CopyWebpackPlugin([{
         from: path.join(__dirname, '../src/control'),

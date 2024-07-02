@@ -60,7 +60,7 @@ const WebpackConfig = {
       from: path.join(__dirname, '../src/resources'),
       to: path.join(__dirname, '../resources'),
     }], {
-      ignore: ['*.js', '*.html', '*.md']
+      ignore: []
     }),
     new CopyWebpackPlugin([{
         from: path.join(__dirname, '../src/control'),

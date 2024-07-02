@@ -60,9 +60,12 @@ function init() {
 
   // Keep state up to date with control changes
   buildfire.datastore.onUpdate((result) => {
-    state.data = result.data;
-    !state.data.design ? state.data.design = defaultData.design : null;
-    render();
+    const isContentChanged = !!result.data.content
+    if (isContentChanged) {
+      state.data = result.data;
+      !state.data.design ? state.data.design = defaultData.design : null;
+      render();
+    }
   });
 }
 
