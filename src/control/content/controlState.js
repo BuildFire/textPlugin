@@ -1,4 +1,4 @@
 // eslint-disable-next-line no-unused-vars
-const AppState = {
+const ControlState = {
     settings: null,
 };
