@@ -1,5 +1,9 @@
+body {
+    font-family: 'Conv_apercu_regular','Helvetica','Sans-Serif','Arial';
+}
 #frMain {
     height: 95vh;
+    flex-direction: column;
 }
 .tinymce-editor{
     flex: 1;

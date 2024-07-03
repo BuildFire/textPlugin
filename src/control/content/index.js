@@ -93,7 +93,7 @@ textPluginApp.controller('textPluginCtrl', ['$scope', function ($scope) {
     /*
      * Call the datastore to save the data object
      */
-    var saveData = function (newObj) {
+    var saveData = function (newObj, callBack) {
         if (!datastoreInitialized) {
             console.error("Error with datastore didn't get called");
             return;
@@ -114,7 +114,7 @@ textPluginApp.controller('textPluginCtrl', ['$scope', function ($scope) {
             if (err || !result) {
                 console.error('Error saving the widget details: ', err);
             } else {
-                console.info('Widget details saved');
+                callBack();
             }
         });
     };
@@ -122,12 +122,22 @@ textPluginApp.controller('textPluginCtrl', ['$scope', function ($scope) {
         if (!$scope.searchEngineIndexing) return;
         buildfire.dynamic.expressions.evaluate({expression: content}, (err, result) => {
             if (err) return console.error(err);
-            const content = extractText(result.evaluatedExpression);
+            const content = prepareSearchEngineContent(result.evaluatedExpression);
             if (!content.title || !content.description) {
-                SearchEngineService.delete();
+                SearchEngineService.delete().catch(()=>{
+                    buildfire.dialog.toast({
+                        message: 'Error indexing data.',
+                        type:'danger'
+                    });
+                });
                 return;
             }
-            SearchEngineService.save(content.title, content.description);
+            SearchEngineService.save(content.title, content.description).catch(()=>{
+                buildfire.dialog.toast({
+                    message: 'Error indexing data.',
+                    type:'danger'
+                });
+            });
         })
     };
     /*
@@ -139,9 +149,7 @@ textPluginApp.controller('textPluginCtrl', ['$scope', function ($scope) {
         if (tmrDelay) clearTimeout(tmrDelay);
         if (angular.equals(newObj, oldObj)) return;
         tmrDelay = setTimeout(function () {
-            saveData(newObj);
-            saveSearchEngine(newObj.content.text);
-
+            saveData(newObj, function () {saveSearchEngine(newObj.content.text)});
         }, 500);
     };
 

@@ -20,6 +20,7 @@ textPluginApp.controller('textSettingCtrl', ['$scope', function ($scope) {
                 if ($scope.searchEngineIndexing !== initialSearchEngineIndexing) {
                     Settings.save({searchEngineIndexing: $scope.searchEngineIndexing});
                     Content.get().then(function (data) {
+                        if (data && data.data && data.data.content && data.data.content.text)
                         $scope.handleSearchEngine(data.data.content.text);
                     });
                 }
@@ -28,6 +29,7 @@ textPluginApp.controller('textSettingCtrl', ['$scope', function ($scope) {
             if ($scope.searchEngineIndexing !== initialSearchEngineIndexing) {
                 Settings.save({searchEngineIndexing: $scope.searchEngineIndexing});
                 Content.get().then(function (data) {
+                    if (data && data.data && data.data.content && data.data.content.text)
                     $scope.handleSearchEngine(data.data.content.text);
                 });
             }
@@ -37,14 +39,24 @@ textPluginApp.controller('textSettingCtrl', ['$scope', function ($scope) {
     $scope.handleSearchEngine = function (content) {
         buildfire.dynamic.expressions.evaluate({expression: content}, (err, result) => {
             if (err) return console.error(err);
-            const content = extractText(result.evaluatedExpression);
+            const content = prepareSearchEngineContent(result.evaluatedExpression);
             if (!content.title || !content.description) {
                 return;
             }
             if (!$scope.searchEngineIndexing) {
-                SearchEngineService.delete();
+                SearchEngineService.delete().catch(()=>{
+                    buildfire.dialog.toast({
+                        message: 'Error indexing data.',
+                        type:'danger'
+                    });
+                });
             } else
-                SearchEngineService.save(content.title, content.description);
+                SearchEngineService.save(content.title, content.description).catch(()=>{
+                    buildfire.dialog.toast({
+                        message: 'Error indexing data.',
+                        type:'danger'
+                    });
+                });
         })
     };
 

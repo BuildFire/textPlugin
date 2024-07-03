@@ -60,8 +60,8 @@ function init() {
 
   // Keep state up to date with control changes
   buildfire.datastore.onUpdate((result) => {
-    const isContentChanged = !!result.data.content
-    if (isContentChanged) {
+    const hasContentChanged = !!result.data.content
+    if (hasContentChanged) {
       state.data = result.data;
       !state.data.design ? state.data.design = defaultData.design : null;
       render();

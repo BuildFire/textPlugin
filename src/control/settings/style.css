@@ -81,12 +81,7 @@
 }
 
 
-.referral-code-container{
-    display: flex;
-    align-items: flex-start;
-}
-
-.info-note {
+.button-switch p.info-note {
     color: var(--c-gray5);
     background-color: var(--c-gray1);
     font-family: 'Conv_apercu_regular', 'Helvetica', 'Sans-Serif', 'Arial';

@@ -1,4 +1,4 @@
-function extractText (el) {
+function prepareSearchEngineContent (el) {
     let excludeTags = ["script", "style", "button"];
     let title = "";
     let description = "";
