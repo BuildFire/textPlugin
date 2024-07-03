@@ -60,9 +60,11 @@ textPluginApp.controller('textSettingCtrl', ['$scope', function ($scope) {
         })
     };
 
-    Settings.get().then(function (data) {
-        $scope.searchEngineIndexing = data.searchEngineIndexing;
-        $scope.$apply();
+    AuthManager.refreshCurrentUser().then(function () {
+        Settings.get().then(function (data) {
+            $scope.searchEngineIndexing = data.searchEngineIndexing;
+            $scope.$apply();
+        });
     });
 }
 ]);

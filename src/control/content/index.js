@@ -87,8 +87,9 @@ textPluginApp.controller('textPluginCtrl', ['$scope', function ($scope) {
         }
     });
 
-    Settings.get().then((data) => $scope.searchEngineIndexing = data.searchEngineIndexing);
-
+    AuthManager.refreshCurrentUser().then(function () {
+        Settings.get().then((data) => $scope.searchEngineIndexing = data.searchEngineIndexing);
+    });
 
     /*
      * Call the datastore to save the data object
@@ -113,9 +114,8 @@ textPluginApp.controller('textPluginCtrl', ['$scope', function ($scope) {
         buildfire.datastore.save(newObj, function (err, result) {
             if (err || !result) {
                 console.error('Error saving the widget details: ', err);
-            } else {
-                callBack();
             }
+            callBack();
         });
     };
     var saveSearchEngine = function (content) {

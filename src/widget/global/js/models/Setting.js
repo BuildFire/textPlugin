@@ -5,7 +5,7 @@ class Setting {
      */
     constructor(data = {}) {
         this.searchEngineIndexing = data.searchEngineIndexing || false;
-        this.isActive = data.isActive || false;
+        this.isActive = data.isActive || true;
         this.createdOn = data.createdOn || new Date();
         this.createdBy = data.createdBy || '';
         this.lastUpdatedOn = data.lastUpdatedOn || new Date();
