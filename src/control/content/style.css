@@ -1,0 +1,19 @@
+body {
+    font-family: 'Conv_apercu_regular','Helvetica','Sans-Serif','Arial';
+}
+#frMain {
+    height: 95vh;
+    flex-direction: column;
+}
+.tinymce-editor{
+    flex: 1;
+}
+.tinymce-editor .main {
+    height: 100%;
+}
+
+/* This rule overrides the height of the TinyMCE editor */
+.tox.tox-tinymce {
+    min-height: 100% !important;
+}
+

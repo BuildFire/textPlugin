@@ -66,11 +66,14 @@ const WebpackConfig = {
       to: path.join(__dirname, '../dist/plugin.json'),
     }
     ], {
-      ignore: ['*.js', '*.html', '*.md']
-    }),
+      ignore: ['*.js', '*.html', '*.md']    }),
     new CopyWebpackPlugin([{
         from: path.join(__dirname, '../src/control'),
         to: path.join(__dirname, '../dist/control'),
+    }]),
+    new CopyWebpackPlugin([{
+      from: path.join(__dirname, '../src/widget'),
+      to: path.join(__dirname, '../dist/widget'),
     }]),
     new ExtractTextPlugin('[name].css'),
     new ZipWebpackPlugin({

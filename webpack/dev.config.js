@@ -63,6 +63,10 @@ const WebpackConfig = {
       ignore: ['*.js', '*.html', '*.md']
     }),
     new CopyWebpackPlugin([{
+      from: path.join(__dirname, '../src/widget'),
+      to: path.join(__dirname, '../dist/widget'),
+    }]),
+    new CopyWebpackPlugin([{
         from: path.join(__dirname, '../src/control'),
         to: path.join(__dirname, '../control'),
     }]),

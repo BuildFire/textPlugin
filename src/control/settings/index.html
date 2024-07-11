@@ -1,10 +1,41 @@
 <!DOCTYPE html>
-<html>
+<html ng-app="textSetting">
 <head lang="en">
     <meta charset="UTF-8">
-    <title></title>
+    
+    <script src="../../../../scripts/buildfire.js"></script>
+    <script src="../../../../scripts/angular/angular.min.js"></script>
+    <script src="../../../../scripts/buildfire/services/searchEngine/searchEngine.js"></script>
+    
+    <script src="../content/controlState.js"></script>
+    <script src="../../widget/global/js/services/AuthManager.js"></script>
+    <script src="../../widget/global/js/models/Setting.js"></script>
+    <script src="../../widget/global/js/repositories/Settings.js"></script>
+    <script src="../../widget/global/js/repositories/Content.js"></script>
+    <script src="../../widget/global/js/utils.js"></script>
+    <script src="../../widget/global/js/services/searchEngine.js"></script>
+    <script src="./index.js"></script>
+    
+    <link href="../../../../styles/control/bf-base.css" rel="stylesheet">
+    <link href="../../../../styles/helper.css" rel="stylesheet">
+    <link href="./style.css" rel="stylesheet"/>
+
 </head>
-<body>
-no settings
+<body ng-controller="textSettingCtrl">
+<div class="flex flex-align-start margin-top-ten">
+    <label class="tooltip-container col-md-5">Search Engine Indexing
+        <span class="btn-info-icon btn-primary">
+            <span class="cp-tooltip">Enable to allow content from this Text WYSIWYG
+                to be indexed and searchable in the global search located in the app's side menu.
+            </span>
+        </span>
+    </label>
+    <div class="button-switch col-md-8 text-right">
+        <input id="searchEngineIndexing" type="checkbox" ng-click="handleCheckboxClick()" ng-checked="searchEngineIndexing" />
+        <label for="searchEngineIndexing" class="label-success"></label>
+        <p class="info-note margin-top-twenty">Please note: Any changes to the content will update automatically in
+            the search engine, but you still need to publish the app for users to see these updates.</p>
+    </div>
+</div>
 </body>
 </html>
