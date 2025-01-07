@@ -1,7 +1,7 @@
 {
   "author":"Buildfire"
-  ,"pluginName":"Text WYSIWYG"
-  ,"pluginDescription":"The Text/WYSIWYG plugin is much more than just text. You can also embed images, videos, and forms. You can even use it as an HTML editor to customize the plugin however you want."
+  ,"pluginName":"WYSIWYG"
+  ,"pluginDescription":"Unlock versatile content creation with the Text/WYSIWYG plugin, allowing you to embed images, videos, and forms, and customize it as an HTML editor for full flexibility."
   ,"supportEmail":"support@buildfire.com"
   ,"supportSite":"http://learn.appdocumentation.com/plugin-tutorials/using-the-text-wysiwyg-feature"
   ,"pluginIcon":"icon.png"
