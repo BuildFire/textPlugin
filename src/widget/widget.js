@@ -4,11 +4,9 @@ const Layouts = {
   1: 'WideScreen',
   2: 'Cinema'
 }
-const resieImage = (image) =>{
+const resizeImage = (image,options) =>{
   return buildfire.imageLib.resizeImage(
-    image,
-    { size: "full_width", aspect: "1:1" }
-  );
+    image, options);
 }
 
 const defaultData = {
@@ -84,7 +82,9 @@ function render() {
   // Set background image if needed
   if (design && design.backgroundImage) {
 
-    const url = resieImage(design.backgroundImage);
+    const width = Math.ceil(state.width);
+    const height = Math.ceil(state.height);
+    const url = resizeImage(design.backgroundImage, { width, height });
 
     window.document.body.setAttribute('style', `
       background-size: cover !important;
