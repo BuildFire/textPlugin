@@ -4,6 +4,10 @@ const Layouts = {
   1: 'WideScreen',
   2: 'Cinema'
 }
+const resizeImage = (image,options) =>{
+  return buildfire.imageLib.resizeImage(
+    image, options);
+}
 
 const defaultData = {
   content: {
@@ -77,11 +81,10 @@ function render() {
 
   // Set background image if needed
   if (design && design.backgroundImage) {
+
     const width = Math.ceil(state.width);
     const height = Math.ceil(state.height);
-
-    const baseUrl = 'https://czi3m2qn.cloudimg.io/cdn/n/n';
-    const url = `${baseUrl}/${design.backgroundImage}?h=${height}&w=${width}`;
+    const url = resizeImage(design.backgroundImage, { width, height });
 
     window.document.body.setAttribute('style', `
       background-size: cover !important;
