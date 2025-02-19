@@ -27,5 +27,6 @@
    "languages":[
       "en"
    ],
+   "keywords": "Text WYSIWYG",
    "webpack": "8080"
 }
